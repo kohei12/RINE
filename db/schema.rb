@@ -11,18 +11,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161105104010) do
+ActiveRecord::Schema.define(version: 20161107051250) do
 
   create_table "friendships", force: :cascade do |t|
-    t.integer  "user_id",     limit: 4
-    t.integer  "friend_id",   limit: 4
-    t.integer  "status",      limit: 4
+    t.integer  "user_id",     limit: 4, null: false
+    t.integer  "friend_id",   limit: 4, null: false
+    t.integer  "status",      limit: 4, null: false
     t.datetime "accepted_at"
     t.datetime "created_at",            null: false
     t.datetime "updated_at",            null: false
   end
 
   add_index "friendships", ["user_id", "friend_id"], name: "index_friendships_on_user_id_and_friend_id", unique: true, using: :btree
+
+  create_table "messages", force: :cascade do |t|
+    t.integer  "room_id",    limit: 4
+    t.integer  "user_id",    limit: 4
+    t.text     "text",       limit: 65535, null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  create_table "rooms", force: :cascade do |t|
+    t.integer  "friendship_id", limit: 4, null: false
+    t.integer  "user_id",       limit: 4
+    t.integer  "friend_id",     limit: 4
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "name",          limit: 255, null: false

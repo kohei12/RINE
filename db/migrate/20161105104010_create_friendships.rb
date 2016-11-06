@@ -1,9 +1,9 @@
 class CreateFriendships < ActiveRecord::Migration
   def change
     create_table :friendships do |t|
-      t.references :user
-      t.references :friend
-      t.integer :status
+      t.references :user, null: false
+      t.references :friend, null: false
+      t.integer :status, null: false
       t.datetime :accepted_at
 
       t.timestamps null: false

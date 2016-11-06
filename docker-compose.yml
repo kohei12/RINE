@@ -11,6 +11,7 @@ services:
       - "3000:3000"
     links:
       - db
+      - redis
     environment:
       DATABASE_PASSWORD: "password123"
       DATABASE_USER: "root"
@@ -29,3 +30,9 @@ services:
     image: "busybox"
     volumes:
       - "/var/lib/mysql/data"
+  redis:
+    image: redis:2.8.19
+    ports:
+      - '8080:80'
+    volumes_from:
+      - data

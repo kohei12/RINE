@@ -1,6 +1,5 @@
 class FriendshipsController < ApplicationController
  def create
-   binding.pry
     current_user = User.find(params[:user_id])
     if @request = Friendship.request(current_user, friend)
       flash[:notice] = 'success!'

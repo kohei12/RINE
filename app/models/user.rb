@@ -11,6 +11,8 @@ class User < ActiveRecord::Base
 
   has_many :friends, through: :friendships
   has_many :friendships, dependent: :destroy
+  has_many :messages, through: :friendships
+  has_many :rooms, through: :friendships, dependent: :destroy
 
   def self.authenticate(email, password)
     user = User.find_by(email: email)

@@ -1,6 +1,7 @@
 class Friendship < ActiveRecord::Base
   belongs_to :user
   belongs_to :friend, class_name: 'User', foreign_key: 'friend_id'
+  has_one :room, dependent: :destroy
 
   validates :user_id,
     uniqueness: { scope: :friend_id }
@@ -22,6 +23,7 @@ class Friendship < ActiveRecord::Base
       accepted_at = Time.now
       accept_one_side(user, friend, accepted_at)
       accept_one_side(friend, user, accepted_at)
+      room = Room.create(user, friend)
     end
   end
 

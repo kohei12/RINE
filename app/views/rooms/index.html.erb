@@ -1,0 +1,8 @@
+<h1>Rooms#index</h1>
+<div class='rooms'>
+  <% @rooms.each do |room| %>
+    <div class='name'>
+      <p><%= link_to room.friend.name, room_path(room), method: 'get' %></p>
+    </div>
+  <% end %>
+</div>
