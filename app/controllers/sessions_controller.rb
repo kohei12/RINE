@@ -1,16 +1,12 @@
 class SessionsController < ApplicationController
   def new
-    redirect_to user if current_user
+    redirect_to current_user if current_user
   end
 
   def create
     user = User.authenticate(params[:email], params[:password])
     if user
-      if params[:remember_me]
-        cookies.permanent[:auth_tokne] = user.auth_token
-      else
-        cookies[:auth_token] = user.auth_token
-      end
+      log_in(user)
       redirect_to user
     else
       # flash
@@ -19,11 +15,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    cookies.delete(:auth_token)
-    redirect_to root_url
-  end
-
-  def current_user
-    @current_user ||= User.find_by_auth_token!(cookies[:auth_token]) if cookies[:auth_token]
+    log_out
+    redirect_to log_in_path
   end
 end
