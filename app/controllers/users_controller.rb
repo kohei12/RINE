@@ -1,13 +1,15 @@
 class UsersController < ApplicationController
-  # before_action :authenticate, only: [:show]
+  before_action :authenticate, only: [:show, :destroy]
+
   def new
-    redirect_to user if current_user
+    redirect_to current_user if current_user
     @user = User.new
   end
 
   def create
     @user = User.new(user_params)
     if @user.save
+      log_in(@user)
       redirect_to user_path(@user)
     else
       render 'new'
@@ -17,8 +19,8 @@ class UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
     @found_user = search(params[:search])
-    @unaccepted_request_ids = unaccepted_request_ids(@user)
-    @waiting_request_ids = waiting_request_ids(@user)
+    @unaccepted_requests = unaccepted_requests
+    @waiting_requests = waiting_requests
   end
 
   def destroy
@@ -31,7 +33,7 @@ class UsersController < ApplicationController
   end
 
   def authenticate
-    unless current_user
+    unless current_user.present?
       redirect_to log_in_path
     else
       true
@@ -40,23 +42,29 @@ class UsersController < ApplicationController
 
   # requests sent to current_user
   # returns array of ids
-  def unaccepted_request_ids(user)
-    ids = Friendship.where(friend: user).map(&:id)
-    return unless ids
-    ids.map do |id|
-      request = Friendship.find(id)
-      request.id if request.status == 'pending'
+  def unaccepted_requests
+    requests = Friendship.where(friend_id: current_user.id)
+    return unless requests
+    requests.map do |request|
+      if request.status == "pending"
+        request
+      else
+        nil
+      end
     end
   end
 
   # requests sent by current_user
   # returns array of ids
-  def waiting_request_ids(user)
-    ids = Friendship.where(user: user).map(&:id)
-    return unless ids
-    ids.map do |id|
-      request = Friendship.find(id)
-      request.id if request.status == 'pending'
+  def waiting_requests
+    requests = Friendship.where(user_id: current_user.id)
+    return unless requests
+    requests.map do |request|
+      if request.status == "pending"
+        request
+      else
+        nil
+      end
     end
   end
 
@@ -65,9 +73,5 @@ class UsersController < ApplicationController
     if email
       User.find_by(email: email)
     end
-  end
-
-  def current_user
-    @current_user ||= User.find_by_auth_token!(cookies[:auth_token]) if cookies[:auth_token]
   end
 end
