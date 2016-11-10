@@ -21,6 +21,10 @@ environment ENV.fetch("RAILS_ENV") { "development" }
 # Workers do not work on JRuby or Windows (both of which do not support
 # processes).
 #
+
+#app_root = File.expand_path("../..", __FILE__)
+#bind "unix://#{app_root}/tmp/sockets/puma.sock"
+
 # workers ENV.fetch("WEB_CONCURRENCY") { 2 }
 
 # Use the `preload_app!` method when specifying a `workers` number.
