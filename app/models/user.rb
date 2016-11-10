@@ -1,6 +1,5 @@
 class User < ActiveRecord::Base
-  attr_accessor :auth_token, :password
-  before_create { generate_token(:auth_token) }
+  attr_accessor :password
   before_save :encrypt_password
 
   validates_presence_of :password, on: :create
@@ -10,9 +9,12 @@ class User < ActiveRecord::Base
   validates_presence_of :name
 
   has_many :friends, through: :friendships
-  has_many :friendships, dependent: :destroy
-  has_many :messages, through: :friendships
-  has_many :rooms, through: :friendships, dependent: :destroy
+  # リクエストを送ったユーザー
+  has_many :requested_users, through: :requested_friendships
+  has_many :friendships, dependent: :destroy, foreign_key: 'user_id'
+  # 自分に送られたリクエスト
+  has_many :requested_friendships, class_name: 'Friendship', dependent: :destroy, foreign_key: 'friend_id'
+  has_many :messages
 
   def self.authenticate(email, password)
     user = User.find_by(email: email)
@@ -23,6 +25,18 @@ class User < ActiveRecord::Base
     end
   end
 
+  def my_friendships
+    Friendship.where("user_id = ? OR friend_id = ?", self.id, self.id)
+  end
+
+  def specific_friendship(friend)
+    my_friendships.find_by("user_id = ? OR friend_id = ?", friend.id, friend.id)
+  end
+
+  def accepted_friendships
+    friendships.where(status: "accepted")
+  end
+
   private
 
   def encrypt_password
@@ -30,11 +44,5 @@ class User < ActiveRecord::Base
       self.password_salt = BCrypt::Engine.generate_salt
       self.password_hash = BCrypt::Engine.hash_secret(password, password_salt)
     end
-  end
-
-  def generate_token(column)
-    begin
-      self[column] = SecureRandom.urlsafe_base64
-    end while User.exists?(column => self[column])
   end
 end
