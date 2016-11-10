@@ -1,19 +1,10 @@
-<h1>チャットルーム</h1>
-<div class='messages'>
-  <% unless @messages.nil? %>
-    <% @messages.each do |message| %>
-      <span><%= message.user.name %></span>
-      <span><%= message.text %></span>
-    <% end %>
-  <% end %>
+<h1>Chat Room</h1>
+
+<div id='messages'>
+  <%= render @messages %>
 </div>
 
-<ul id="chat_area">
-</ul>
-
-<div class='type_field'>
-  <%= form_for @message, url: messages_path, html: { method: 'post' } do |f| %>
-    <%= f.text_field :text, id: 'comment' %>
-    <%= f.submit id: 'send', value: 'send' %>
-  <% end %>
-</div>
+<form>
+  <label>Say something:</label><br>
+  <input type='text' data-behavior='room_speaker'>
+</form>

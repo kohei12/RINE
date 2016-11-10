@@ -1,28 +1,26 @@
 class RoomsController < ApplicationController
-  # before_action :authenticate
+  before_action :authenticate
   
   def index
-    @rooms = current_user.rooms
+    @friendships = current_user.accepted_friendships
   end
 
   def show
-    @message = Message.new
-    @room = Room.find(params[:id])
-    @messages = Message.find_by(room_id: @room)
-    unless @messages.nil?
-      @my_messages = @messages.where(user: current_user)
-      @friend_messages = @messages.where(user: @room.friend)
-    end
+   # @user = current_user
+   # @friend = friend
+   # @room = room
+    @messages = Message.all
   end
 
   private
 
-  def authenticate
-    return unless current_user
+  def room
+    Room.find(params[:id])
   end
 
-  def current_user
-    # FIXME
-    User.first
+  def friend
+    friendship = room.friendship
+    friend = friendship.requested_user == current_user ? friendship.friend : friendship.requested_user
+    friend
   end
 end
