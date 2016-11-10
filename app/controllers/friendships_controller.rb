@@ -1,6 +1,8 @@
 class FriendshipsController < ApplicationController
- def create
-    current_user = User.find(params[:user_id])
+  before_action :authenticate
+
+  def create
+    friend = User.find(params[:friend_id])
     if @request = Friendship.request(current_user, friend)
       flash[:notice] = 'success!'
     else
@@ -13,9 +15,9 @@ class FriendshipsController < ApplicationController
   end
 
   def update
-    current_user = User.find(params[:id])
-    @request = current_user.friendships.find_by(friend: friend)
-    if @request.accept(current_user, friend)
+    requested_user = User.find(params[:requested_user_id])
+    @request = Friendship.find_by(requested_user: requested_user, friend: current_user)
+    if @request.accept(current_user, requested_user)
       flash[:notice] = '友達になりました。'
     else
       flash[:notice] = '承認に失敗しました'
@@ -23,20 +25,9 @@ class FriendshipsController < ApplicationController
     redirect_to user_path(current_user.id)
   end
 
-  def index
-    current_user = User.find(params[:id])
-    @friendships = current_user.friendships.all
-  end
-
   def destroy
   end
 
   def reject
-  end
-
-  private
-
-  def friend
-    @friend ||= User.find(params[:friend_id])
   end
 end
