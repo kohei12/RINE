@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -13,43 +12,40 @@
 
 ActiveRecord::Schema.define(version: 20161107051250) do
 
-  create_table "friendships", force: :cascade do |t|
-    t.integer  "user_id",     limit: 4, null: false
-    t.integer  "friend_id",   limit: 4, null: false
-    t.integer  "status",      limit: 4, null: false
+  create_table "friendships", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id",     null: false
+    t.integer  "friend_id",   null: false
+    t.integer  "status",      null: false
     t.datetime "accepted_at"
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.index ["user_id", "friend_id"], name: "index_friendships_on_user_id_and_friend_id", unique: true, using: :btree
   end
 
-  add_index "friendships", ["user_id", "friend_id"], name: "index_friendships_on_user_id_and_friend_id", unique: true, using: :btree
-
-  create_table "messages", force: :cascade do |t|
-    t.integer  "room_id",    limit: 4
-    t.integer  "user_id",    limit: 4
+  create_table "messages", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id",                  null: false
+    t.integer  "room_id",                  null: false
     t.text     "text",       limit: 65535, null: false
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
   end
 
-  create_table "rooms", force: :cascade do |t|
-    t.integer  "friendship_id", limit: 4, null: false
-    t.integer  "user_id",       limit: 4
-    t.integer  "friend_id",     limit: 4
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+  create_table "rooms", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "friendship_id", null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.index ["friendship_id"], name: "index_rooms_on_friendship_id", unique: true, using: :btree
   end
 
-  create_table "users", force: :cascade do |t|
-    t.string   "name",          limit: 255, null: false
-    t.string   "email",         limit: 255, null: false
-    t.string   "password_hash", limit: 255
-    t.string   "password_salt", limit: 255
-    t.string   "auth_token",    limit: 255
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+  create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name",          null: false
+    t.string   "email",         null: false
+    t.string   "password_hash"
+    t.string   "password_salt"
+    t.string   "auth_token"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
   end
-
-  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
 
 end
