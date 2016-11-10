@@ -5,7 +5,7 @@ module SessionsHelper
   end
 
   def current_user
-    @current_user ||= User.find(session[:user_id]) if session[:user_id]
+    @current_user ||= User.find(session[:user_id]) if session[:user_id].present?
   end
 
   def logged_in?
@@ -14,7 +14,15 @@ module SessionsHelper
   end
 
   def log_out
-    session.delete(@current_user)
+    session[:user_id] = nil
     @current_user = nil
+  end
+
+  def authenticate
+    unless current_user.present?
+      redirect_to log_in_path
+    else
+      true
+    end
   end
 end
