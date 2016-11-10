@@ -8,36 +8,45 @@
 <div class="search_results">
   <% if @found_user.present? %>
     <span><%= @found_user.name << 'さん' %></span>
-    <% if friendship = @found_user.friendships.find_by(friend: @user) %>
-      <% if friendship.status == 'pending' %>
-        <span><%= link_to '承認する', friendship_path(@user, friend_id: @found_user), method: 'put' %></span>
-      <% elsif friendship.status == 'requested' %>
-        <span>承認待ち</span>
-      <% elsif friendship.status == 'accepted' %>
-        <span>友達</span>
-      <% end %>
-    <% else %>
+    <% if @user.specific_friendship(@found_user).blank? %>
       <span><%= link_to '友達になる', friendships_path(user_id: @user, friend_id: @found_user), method: 'post' %></span>
+    <% elsif friendship = @user.specific_friendship(@found_user) %>
+      <% if friendship.friend == @found_user %>
+        <% if friendship.status == 'pending' %>
+          <span><%= link_to '承認する', friendship_path(@user, requested_user_id: @found_user.id), method: 'put' %></span>
+        <% elsif friendship.status == 'accepted' %>
+          <span>友達</span>
+        <% end %>
+      <% elsif friendship.requested_user == @user %>
+        <% if friendship.status == 'pending' %>
+          <span>承認待ち</span>
+        <% elsif friendship.status == 'accepted' %>
+          <span>友達</span>
+        <% end %>
+      <% end %>
     <% end %>
   <% end %>
 </div>
 <div class="waiting_friendship">
-  <% unless @waiting_request_ids.first == nil %>
-    <% @waiting_request_ids.each do |request_id| %>
+  <% unless @waiting_requests.first == nil %>
+    <% @waiting_requests.each do |request| %>
       <div class="waiting_requests">
-        <span><%= Friendship.find(request_id).friend.name %></span>
-        <span><%= '承認待ち' %></span>
-      </div><br>
+        <span><%= request.friend.name %></span>
+        <span>承認待ち</span>
+      </div></br>
     <% end %>
   <% end %>
 </div>
 <div class="requested_friendship">
-  <% unless @unaccepted_request_ids.first == nil %>
-    <% @unaccepted_request_ids.each do |request_id| %>
+  <% unless @unaccepted_requests.first == nil %>
+    <% @unaccepted_requests.each do |request| %>
       <div class="waiting_requests">
-        <span><%= Friendship.find(request_id).user.name %></span>
-        <span><%= link_to '承認する', friendship_path(@user, friend_id: Friendship.find(request_id).user.id), method: 'put' %></span>
+        <span><%= request.requested_user.name %></span>
+        <span><%= link_to '承認する', friendship_path(@user, requested_user_id: request.requested_user.id), method: 'put' %></span>
       </div><br>
     <% end %>
   <% end %>
+</div>
+<div class="log_out">
+  <%= link_to "ログアウト", session_path(@user), method: 'delete' %>
 </div>
