@@ -2,14 +2,15 @@ class RoomsController < ApplicationController
   before_action :authenticate
   
   def index
-    @friendships = current_user.accepted_friendships
+    @user = current_user
+    @rooms = current_user.accepted_friendships
   end
 
   def show
-   # @user = current_user
-   # @friend = friend
-   # @room = room
-    @messages = Message.all
+    @user = current_user
+    @friend = friend
+    @room = room
+    @messages = @room.messages
   end
 
   private
