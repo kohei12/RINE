@@ -33,6 +33,6 @@ services:
   redis:
     image: redis:2.8.19
     ports:
-      - '8080:80'
+      - '6379:6379'
     volumes_from:
       - data
