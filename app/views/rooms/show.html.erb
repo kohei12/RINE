@@ -1,10 +1,17 @@
 <h1>Chat Room</h1>
 
-<div id='messages'>
+<div id='messages', data-room_id="<%= @room.id %>">
   <%= render @messages %>
 </div>
-
-<form>
-  <label>Say something:</label><br>
-  <input type='text' data-behavior='room_speaker'>
-</form>
+<br>
+<br>
+<div class='input'>
+  <form>
+    <label>投稿:</label><br>
+    <input type='text' data-behavior='room_speaker'>
+  </form>
+</div>
+<br>
+<div class='links'>
+  <%= link_to 'プロフィール', user_path(@user), method: 'get' %>
+</div>
