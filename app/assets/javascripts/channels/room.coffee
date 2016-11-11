@@ -1,16 +1,20 @@
-App.room = App.cable.subscriptions.create "RoomChannel",
-  connected: ->
+jQuery(document).on 'turbolinks:load', ->
+  messages = $('#messages')
+  if $('#messages').length > 0
 
-  disconnected: ->
+    App.room = App.cable.subscriptions.create { channel: "RoomChannel", room_id: messages.data('room_id') },
+      connected: ->
 
-  received: (data) ->
-    $('#messages').append data['message']
+      disconnected: ->
 
-  speak: (message) ->
-    @perform 'speak', message: message
+      received: (data) ->
+        $('#messages').append data
 
-$(document).on 'keypress', '[data-behavior~=room_speaker]', (event) ->
-  if event.keyCode is 13 # return = send
-    App.room.speak event.target.value
-    event.target.value = ''
-    event.preventDefault()
+      speak: (message) ->
+        @perform 'speak', message: message
+
+    $(document).on 'keypress', '[data-behavior~=room_speaker]', (event) ->
+      if event.keyCode is 13 # return = send
+        App.room.speak event.target.value
+        event.target.value = ''
+        event.preventDefault()
