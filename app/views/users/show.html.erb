@@ -1,10 +1,11 @@
-<p>プロフィール</p>
+<p><%= "#{@user.name}さん、こんにちは" %></p>
 <div class="search">
   <%= form_tag user_path, method: 'get' do %>
+    <%= label_tag :email %>
     <%= text_field_tag :search, params[:search] %>
     <%= submit_tag "Search" %>
   <% end %>
-</div>
+</div><br>
 <div class="search_results">
   <% if @found_user.present? %>
     <span><%= @found_user.name << 'さん' %></span>
@@ -26,7 +27,7 @@
       <% end %>
     <% end %>
   <% end %>
-</div>
+</div><br>
 <div class="waiting_friendship">
   <% unless @waiting_requests.first == nil %>
     <% @waiting_requests.each do |request| %>
@@ -47,6 +48,8 @@
     <% end %>
   <% end %>
 </div>
-<div class="log_out">
-  <%= link_to "ログアウト", session_path(@user), method: 'delete' %>
+<div class="link">
+  <span><%= link_to "ログアウト", session_path(@user), method: 'delete' %></span>
+  <span><%= link_to "友達", rooms_path %>
+  <p><%= link_to "退会", user_path(@user), method: 'delete', data: { confirm: "本当に退会しますか？" } %></p>
 </div>
