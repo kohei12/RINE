@@ -23,9 +23,9 @@ ActiveRecord::Schema.define(version: 20161107051250) do
   end
 
   create_table "messages", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "user_id",                  null: false
     t.integer  "room_id",                  null: false
-    t.text     "text",       limit: 65535, null: false
+    t.integer  "user_id",                  null: false
+    t.text     "content",    limit: 65535, null: false
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
   end
