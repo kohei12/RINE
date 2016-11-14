@@ -1,4 +1,5 @@
 class RoomsController < ApplicationController
+  before_action :check_member, only: [:show]
   before_action :authenticate
   
   def index
@@ -23,5 +24,18 @@ class RoomsController < ApplicationController
     friendship = room.friendship
     friend = friendship.requested_user == current_user ? friendship.friend : friendship.requested_user
     friend
+  end
+
+  def check_member
+    friendship = room.friendship
+    unless current_user.id == friendship.user_id || current_user.id == friendship.friend_id
+      if current_user.present?
+        redirect_to current_user
+      else
+        redirect_to log_in_path
+      end
+    else
+      true
+    end
   end
 end
