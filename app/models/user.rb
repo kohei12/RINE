@@ -34,7 +34,7 @@ class User < ActiveRecord::Base
   end
 
   def accepted_friendships
-    friendships.where(status: "accepted")
+    my_friendships.where(status: "accepted")
   end
 
   private
