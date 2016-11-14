@@ -29,11 +29,7 @@ class RoomsController < ApplicationController
   def check_member
     friendship = room.friendship
     unless current_user.id == friendship.user_id || current_user.id == friendship.friend_id
-      if current_user.present?
-        redirect_to current_user
-      else
-        redirect_to log_in_path
-      end
+      redirect_to current_user
     else
       true
     end
