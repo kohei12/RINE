@@ -7,9 +7,11 @@ class Room < ActiveRecord::Base
     uniqueness: true
 
   def self.create(user, friend, friendship)
-    room = Room.new
-    room.friendship = friendship
-    room.save
+    transaction do
+      room = Room.new
+      room.friendship = friendship
+      room.save
+    end
     room
   end
 end

@@ -25,18 +25,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def my_friendships
-    Friendship.where("user_id = ? OR friend_id = ?", self.id, self.id)
-  end
-
-  def specific_friendship(friend)
-    my_friendships.find_by("user_id = ? OR friend_id = ?", friend.id, friend.id)
-  end
-
-  def accepted_friendships
-    my_friendships.where(status: "accepted")
-  end
-
   private
 
   def encrypt_password

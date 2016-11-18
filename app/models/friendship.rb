@@ -12,27 +12,33 @@ class Friendship < ActiveRecord::Base
 
   enum status: { pending: 1, accepted: 2, rejected: 3 }.freeze
 
-  def self.request(user, friend)
-    unless user == friend || already_requested?(user, friend)
-      transaction do
-        create(requested_user: user, friend: friend, status: 'pending')
-      end
-    end
-  end
-
-  def accept(user, friend)
-    unless user == friend || self.requested_user == user
-      transaction do
-        self.update!(
-         accepted_at: Time.now,
-         status: 'accepted',
-         room: Room.create(user, friend, self)
-        )
-      end
-    end
-  end
-
   def self.already_requested?(user, friend)
     user.friendships.where(friend: friend).present?
+  end
+
+  # requests sent to current_user
+  def self.unaccepted_requests(user)
+    requests = self.where(friend_id: user.id)
+    return unless requests
+    requests.map do |request|
+      if request.status == "pending"
+        request
+      else
+        nil
+      end
+    end
+  end
+
+  # requests sent by current_user
+  def self.waiting_requests(user)
+    requests = self.where(user_id: user.id)
+    return unless requests
+    requests.map do |request|
+      if request.status == "pending"
+        request
+      else
+        nil
+      end
+    end
   end
 end
