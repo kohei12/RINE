@@ -8,7 +8,7 @@ jQuery(document).on 'turbolinks:load', ->
       disconnected: ->
 
       received: (data) ->
-        $('#messages').append data
+        $('#messages').append data['message']
 
       speak: (message) ->
         @perform 'speak', message: message
