@@ -4,7 +4,7 @@ class RoomsController < ApplicationController
   
   def index
     @user = current_user
-    @rooms = accepted_friendships
+    @rooms = current_user.my_friendships
   end
 
   def show
@@ -29,17 +29,5 @@ class RoomsController < ApplicationController
     else
       true
     end
-  end
-
-  def my_friendships
-    Friendship.where("user_id = ? OR friend_id = ?", current_user.id, current_user.id)
-  end
-
-  def specific_friendship(friend)
-    my_friendships.find_by("user_id = ? OR friend_id = ?", friend.id, friend.id)
-  end
-
-  def accepted_friendships
-    my_friendships.where(status: "accepted")
   end
 end

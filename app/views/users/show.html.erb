@@ -9,9 +9,9 @@
 <div class="search_results">
   <% if @found_user.present? %>
     <span><%= @found_user.name << 'さん' %></span>
-    <% if @user.specific_friendship(@found_user).blank? %>
+    <% if @user.can_request_to?(@found_user) %>
       <span><%= link_to '友達になる', friendships_path(user_id: @user, friend_id: @found_user), method: 'post' %></span>
-    <% elsif friendship = @user.specific_friendship(@found_user) %>
+    <% elsif friendship = @user.friendship_with(@found_user) %>
       <% if friendship.friend == @found_user %>
         <% if friendship.status == 'pending' %>
           <span><%= link_to '承認する', friendship_path(@user, requested_user_id: @found_user.id), method: 'put' %></span>

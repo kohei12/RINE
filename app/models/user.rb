@@ -25,6 +25,38 @@ class User < ActiveRecord::Base
     end
   end
 
+  def can_request_to?(user)
+    if friendship_with(user).present?
+      false
+    else
+      true
+    end
+  end
+
+  def can_accept?(request)
+    if self == request.requested_user
+      false
+    else
+      true
+    end
+  end
+
+  def my_friendships
+    Friendship.where("user_id OR friend_id", self.id, self.id)
+  end
+
+  def friendship_with(friend)
+    my_friendships.where("user_id OR friend_id", friend.id, friend.id)
+  end
+
+  def unaccepted_requests
+    self.friendships.where(status: :pending)
+  end
+
+  def waiting_requests
+    self.requested_friendships.where(status: :pending)
+  end
+
   private
 
   def encrypt_password

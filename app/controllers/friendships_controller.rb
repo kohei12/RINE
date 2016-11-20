@@ -31,20 +31,20 @@ class FriendshipsController < ApplicationController
 
   def request_friendship(friend)
     unless current_user == friend || Friendship.already_requested?(current_user, friend)
-      transaction do
+      Friendship.transaction do
         Friendship.create(requested_user: current_user, friend: friend, status: 'pending')
       end
     end
   end
 
   def accept_friendship(requested_user)
-    request = Friendship.find_by(requested_user: requested_user, friend: current_user)
-    unless current_user == requested_user
-      transaction do
-        self.update!(
+    request = current_user.friendships.find_by(requested_user: requested_user)
+    unless current_user.can_accept?(request)
+      Friendship.transaction do
+        request.update!(
          accepted_at: Time.now,
          status: 'accepted',
-         room: Room.create(current_user, requested_user, self)
+         room: Room.create!(friendship_id: request.id)
         )
       end
     end

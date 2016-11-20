@@ -19,8 +19,8 @@ class UsersController < ApplicationController
   def show
     @user = User.find(params[:id])
     @found_user = search(params[:search])
-    @unaccepted_requests = current_user.friendships.unaccepted_requests(current_user)
-    @waiting_requests = current_user.friendships.waiting_requests(current_user)
+    @unaccepted_requests = current_user.unaccepted_requests
+    @waiting_requests = current_user.waiting_requests
   end
 
   def destroy

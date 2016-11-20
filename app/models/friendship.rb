@@ -15,30 +15,4 @@ class Friendship < ActiveRecord::Base
   def self.already_requested?(user, friend)
     user.friendships.where(friend: friend).present?
   end
-
-  # requests sent to current_user
-  def self.unaccepted_requests(user)
-    requests = self.where(friend_id: user.id)
-    return unless requests
-    requests.map do |request|
-      if request.status == "pending"
-        request
-      else
-        nil
-      end
-    end
-  end
-
-  # requests sent by current_user
-  def self.waiting_requests(user)
-    requests = self.where(user_id: user.id)
-    return unless requests
-    requests.map do |request|
-      if request.status == "pending"
-        request
-      else
-        nil
-      end
-    end
-  end
 end
