@@ -22,9 +22,13 @@ class FriendshipsController < ApplicationController
   end
 
   def destroy
-  end
-
-  def reject
+    request = current_user.friendships.find_by(user_id: params[:requested_user_id])
+    if request.destroy
+      flash.now[:notice] = "却下しました"
+    else
+      flash.now[:notice] = "却下に失敗しました"
+    end
+    redirect_to current_user
   end
 
   private
@@ -38,8 +42,8 @@ class FriendshipsController < ApplicationController
   end
 
   def accept_friendship(requested_user)
-    request = current_user.friendships.find_by(requested_user: requested_user)
-    unless current_user.can_accept?(request)
+    request = current_user.requested_friendships.find_by(requested_user: requested_user)
+    if current_user.can_accept?(request)
       Friendship.transaction do
         request.update!(
          accepted_at: Time.now,
