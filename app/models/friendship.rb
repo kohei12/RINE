@@ -10,7 +10,20 @@ class Friendship < ActiveRecord::Base
   validates_presence_of :friend_id
   validates_presence_of :status
 
-  enum status: { pending: 1, accepted: 2, rejected: 3 }.freeze
+  scope :search_for_friendship, lambda { |fields, name|
+    conditions = nil
+    fields = [fields] if fields.class == Symbol
+    fields.each do |field|
+      if conditions.nil?
+        conditions = arel_table[field].eq(name)
+      else
+        conditions = conditions.or(arel_table[field].eq(name))
+      end
+    end
+    where(conditions)
+  }
+
+  enum status: { pending: 1, accepted: 2 }.freeze
 
   def self.already_requested?(user, friend)
     user.friendships.where(friend: friend).present?
