@@ -15,6 +15,7 @@
       <% if friendship.friend == @found_user %>
         <% if friendship.status == 'pending' %>
           <span><%= link_to '承認する', friendship_path(@user, requested_user_id: @found_user.id), method: 'put' %></span>
+          <span><%= link_to '却下する', friendship_path(@user, requested_user_id: @found_user.id), method: 'delete' %></span>
         <% elsif friendship.status == 'accepted' %>
           <span>友達</span>
         <% end %>
@@ -44,6 +45,7 @@
       <div class="waiting_requests">
         <span><%= request.requested_user.name %></span>
         <span><%= link_to '承認する', friendship_path(@user, requested_user_id: request.requested_user.id), method: 'put' %></span>
+        <span><%= link_to '却下する', friendship_path(@user, requested_user_id: request.requested_user.id), method: 'delete' %></span>
       </div><br>
     <% end %>
   <% end %>
