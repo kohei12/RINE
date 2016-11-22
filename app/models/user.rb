@@ -25,8 +25,8 @@ class User < ActiveRecord::Base
     end
   end
 
-  def can_request_to?(user)
-    if friendship_with(user).present?
+  def can_request_to?(friend)
+    if friendship_with(friend).present?
       false
     else
       true
@@ -42,19 +42,19 @@ class User < ActiveRecord::Base
   end
 
   def my_friendships
-    Friendship.where("user_id OR friend_id", self.id, self.id)
+    Friendship.search_for_friendship([:user_id, :friend_id], self.id)
   end
 
   def friendship_with(friend)
-    my_friendships.where("user_id OR friend_id", friend.id, friend.id)
+    my_friendships.find_by("user_id or friend_id", friend.id, friend.id)
   end
 
   def unaccepted_requests
-    self.friendships.where(status: :pending)
+    self.requested_friendships.where(status: :pending)
   end
 
   def waiting_requests
-    self.requested_friendships.where(status: :pending)
+    self.friendships.where(status: :pending)
   end
 
   private
