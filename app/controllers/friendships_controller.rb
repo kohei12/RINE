@@ -22,7 +22,7 @@ class FriendshipsController < ApplicationController
   end
 
   def destroy
-    request = current_user.friendships.find_by(user_id: params[:requested_user_id])
+    request = current_user.requested_friendships.find_by(user_id: params[:requested_user_id])
     if request.destroy
       flash.now[:notice] = "却下しました"
     else
