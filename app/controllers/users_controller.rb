@@ -18,7 +18,7 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
-    @found_user = search(params[:search])
+    @found_user = User.search(params[:search])
     @unaccepted_requests = current_user.unaccepted_requests
     @waiting_requests = current_user.waiting_requests
   end
@@ -37,12 +37,5 @@ class UsersController < ApplicationController
 
   def user_params
     params.require(:user).permit(:email, :name, :password, :password_confirmation)
-  end
-
-  # FIXME
-  def search(email)
-    if email
-      User.find_by(email: email)
-    end
   end
 end

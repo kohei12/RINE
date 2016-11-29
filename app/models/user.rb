@@ -46,7 +46,7 @@ class User < ActiveRecord::Base
   end
 
   def friendship_with(friend)
-    my_friendships.where(requested_user: friend) || my_friendships.where(friend: friend)
+    my_friendships.find_by(requested_user: friend) || my_friendships.find_by(friend: friend)
   end
 
   def unaccepted_requests
@@ -55,6 +55,12 @@ class User < ActiveRecord::Base
 
   def waiting_requests
     self.friendships.where(status: :pending)
+  end
+
+  def self.search(email)
+    if email.present?
+      User.find_by(email: email)
+    end
   end
 
   private
