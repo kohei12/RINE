@@ -46,7 +46,7 @@ class User < ActiveRecord::Base
   end
 
   def friendship_with(friend)
-    my_friendships.find_by("user_id or friend_id", friend.id, friend.id)
+    my_friendships.where(requested_user: friend) || my_friendships.where(friend: friend)
   end
 
   def unaccepted_requests
